@@ -1,5 +1,6 @@
 /**
  * Extends summernote editor with "shift + return = soft linebreak" functionality
+ * https://github.com/covistefan/summernote-br
  * Version: 0.1
  * Date: 2018-08-14T14:00Z
  */
