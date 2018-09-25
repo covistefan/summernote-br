@@ -37,9 +37,6 @@
                     if (e.keyCode === 16) { shiftKey = true; }
                     if (e.keyCode === 13 && shiftKey) {
                         var sel, txt, firstPart = '', lastPart = '', setBR = 0, ms;
-                        /*
-                        var doc = $(this).next('.note-editor').children('.note-editing-area').children('.note-editable').html().ownerDocument || $(this).next('.note-editor').children('.note-editing-area').children('.note-editable').html().document;
-                        */
                         if (typeof window.getSelection != "undefined") {
                             sel = window.getSelection();
                             if (sel.rangeCount > 0) {
@@ -70,8 +67,7 @@
                                                 lastPart = $(this).text().substring(sel.focusOffset).trim();
                                             }
                                         }
-                                        console.log(firstPart);
-                                        console.log(lastPart);
+                                        if (lastPart=='') { lastPart = '&VeryThinSpace;'; } // this did not show up in tests so it will not reflect your sourcecode
                                         if (firstPart=='') { setBR = n+1; } else { setBR = n+2; }
                                         var d = new Date();
                                         ms = d.getSeconds()*1000 + d.getMilliseconds();
@@ -82,7 +78,10 @@
                                 var el = $('#' + ms);
                                 var range = document.createRange();
                                 var sel = window.getSelection();
-                                range.setStart(el.parent().get(0).childNodes[setBR], 0); range.collapse(true);
+                                var rs = el.parent().get(0).childNodes[setBR];
+                                if (rs==undefined) { rs=''; }
+                                range.setStart(rs, 0);
+                                range.collapse(true);
                                 sel.removeAllRanges(); sel.addRange(range);
                                 el.focus; el.removeAttr('id');
                             }
