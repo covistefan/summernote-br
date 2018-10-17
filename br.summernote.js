@@ -1,8 +1,8 @@
 /**
  * Extends summernote editor with "shift + return = soft linebreak" functionality
  * https://github.com/covistefan/summernote-br
- * Version: 0.2
- * Date: 2018-08-25T14:00Z
+ * Version: 0.3
+ * Date: 2018-10-17T12:14Z
  */
 
 (function (factory) {
@@ -36,56 +36,8 @@
                 'summernote.keydown': function (we, e) {
                     if (e.keyCode === 16) { shiftKey = true; }
                     if (e.keyCode === 13 && shiftKey) {
-                        var sel, txt, firstPart = '', lastPart = '', setBR = 0, ms;
-                        if (typeof window.getSelection != "undefined") {
-                            sel = window.getSelection();
-                            if (sel.rangeCount > 0) {
-                                txt = sel.focusNode.textContent;
-                                var area = $(sel.focusNode).parents('.note-editable');
-                                $(sel.focusNode.parentNode.childNodes).each(function(n){
-                                    var cons = $(this).parent();
-                                    if ($(this).text()==txt) {
-                                        if (sel.isCollapsed) {
-                                            // no text selected and the linebreak will be added on caret position
-                                            if ($(this).text().length<=sel.focusOffset) {
-                                                // focus is after last character of set
-                                                firstPart = $(this).text().trim();
-                                                lastPart = '';
-                                            } else {
-                                                // focus is between chars
-                                                firstPart = $(this).text().substring(0,sel.focusOffset).trim();
-                                                lastPart = $(this).text().substring(sel.focusOffset).trim();
-                                            }
-                                        } else {
-                                            // some text was selected and the linebreak will replace that text
-                                            if (sel.focusOffset<sel.anchorOffset) {
-                                                firstPart = $(this).text().substring(0,sel.focusOffset).trim();
-                                                lastPart = $(this).text().substring(sel.anchorOffset).trim();
-                                            }
-                                            else {
-                                                firstPart = $(this).text().substring(0,sel.anchorOffset).trim();
-                                                lastPart = $(this).text().substring(sel.focusOffset).trim();
-                                            }
-                                        }
-                                        if (lastPart=='') { lastPart = '&VeryThinSpace;'; } // this did not show up in tests so it will not reflect your sourcecode
-                                        if (firstPart=='') { setBR = n+1; } else { setBR = n+2; }
-                                        var d = new Date();
-                                        ms = d.getSeconds()*1000 + d.getMilliseconds();
-                                        $(this).replaceWith(firstPart + "<br class='note-lb' id='" + ms + "' />" + lastPart);
-                                        sel.removeAllRanges();
-                                    }; 
-                                });
-                                var el = $('#' + ms);
-                                var range = document.createRange();
-                                var sel = window.getSelection();
-                                var rs = el.parent().get(0).childNodes[setBR];
-                                if (rs==undefined) { rs=''; }
-                                range.setStart(rs, 0);
-                                range.collapse(true);
-                                sel.removeAllRanges(); sel.addRange(range);
-                                el.focus; el.removeAttr('id');
-                            }
-                        }
+                        context.invoke('editor.saveRange');
+                        context.invoke('editor.pasteHTML', '<br />&VeryThinSpace;');
                         e.preventDefault();
                     }
                 },
