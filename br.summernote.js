@@ -1,8 +1,8 @@
 /**
  * Extends summernote editor with "shift + return = soft linebreak" functionality
  * https://github.com/covistefan/summernote-br
- * Version: 0.3
- * Date: 2018-10-17T12:14Z
+ * Version: 0.4
+ * Date: 2019-08-13T12:47Z
  */
 
 (function (factory) {
@@ -19,22 +19,22 @@
     }
 }(function ($) {
     
-    var shiftKey = false;
-/*  console.log('linebreak-plugin loaded'); */
+    var paraFirst = true; // if this set to false, only shift+enter will do a new paragraph 
+                          // and the "normal" behaviour will be the soft break 
     
     // Extends plugins for adding linebreaks - plugin is external module for customizing.
+    var shiftKey = (paraFirst)?false:true;
     $.extend($.summernote.plugins, {
         /**
         * @param {Object} context - context object has status of editor.
         */
         'br': function (context) {
             var self = this;
-
             // This events will be attached when editor is initialized.
             this.events = {
                 // This will be called after modules are initialized.
                 'summernote.keydown': function (we, e) {
-                    if (e.keyCode === 16) { shiftKey = true; }
+                    if (e.keyCode === 16) { shiftKey = (paraFirst)?true:false; }
                     if (e.keyCode === 13 && shiftKey) {
                         context.invoke('editor.saveRange');
                         context.invoke('editor.pasteHTML', '<br />&VeryThinSpace;');
@@ -43,7 +43,7 @@
                 },
                 // This will be called when user releases a key on editable.
                 'summernote.keyup': function (we, e) {
-                    if (e.keyCode==16) { shiftKey = false; }
+                    if (e.keyCode==16) { shiftKey = (paraFirst)?false:true; }
                 }
             };
 
