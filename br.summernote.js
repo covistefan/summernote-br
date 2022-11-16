@@ -49,7 +49,7 @@
 
             this.initialize = function () {};
             this.destroy = function () {
-                this.$panel.remove();
+                if (this.$panel) this.$panel.remove();
                 this.$panel = null;
             };
         }
